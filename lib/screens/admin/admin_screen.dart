@@ -58,13 +58,13 @@ class AdminDashboardScreen extends StatelessWidget {
                   const SizedBox(height: 30),
 
                   // 🔵 Manage Businesses
-                  adminButton(
-                    label: "Manage Businesses",
-                    color: Colors.blue,
-                    onTap: () {
-                      context.push("/admin/businesses");
-                    },
-                  ),
+                  // adminButton(
+                  //   label: "Manage Businesses",
+                  //   color: Colors.blue,
+                  //   onTap: () {
+                  //     context.push("/admin/businesses");
+                  //   },
+                  // ),
 
                   const SizedBox(height: 12),
 
@@ -92,10 +92,10 @@ class AdminDashboardScreen extends StatelessWidget {
 
                   // 🟠 View Reports
                   adminButton(
-                    label: "View Reports",
+                    label: "My Notes",
                     color: Colors.orange,
                     onTap: () {
-                      context.push("/admin/reports");
+                      context.push("/admin/notes");
                     },
                   ),
 

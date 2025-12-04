@@ -64,6 +64,88 @@ class _AdminUserDocumentDetailsScreenState
     expirationDate = doc["expiration"]?.toDate();
   }
 
+  void _openStatusDialog() {
+    final docProvider = context.read<DocumentProvider>();
+
+    final statusOptions = [
+      "approved",
+      "processing",
+      "rejected",
+      "expired",
+      "near expiry",
+      "missing",
+      "verified",
+    ];
+
+    String selected = statusOptions.first;
+
+    final parentContext = context; // save safe context BEFORE dialog
+
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (dialogContext, setStateDialog) {
+          return AlertDialog(
+            title: const Text("Change Document Status"),
+            content: DropdownButton<String>(
+              value: selected,
+              isExpanded: true,
+              items: statusOptions.map((s) {
+                return DropdownMenuItem(
+                  value: s,
+                  child: Text(s.toUpperCase()),
+                );
+              }).toList(),
+              onChanged: (v) => setStateDialog(() => selected = v!),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(dialogContext); // dialog closes here
+
+                  final update = await docProvider.updateDocumentStatus(
+                    userId: widget.userId,
+                    docType: widget.docType,
+                    status: selected,
+                  );
+
+
+
+
+
+
+
+                  if (!parentContext.mounted) return;
+
+                  if (update != null) {
+                    ScaffoldMessenger.of(parentContext).showSnackBar(
+                      SnackBar(content: Text(update)),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(parentContext).showSnackBar(
+                      SnackBar(content: Text("Status updated to $selected")),
+                    );
+
+                    setState(() {}); // <-- THIS TRIGGERS UI REBUILD
+                  }
+                },
+
+
+                child: const Text("Save"),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+  }
+
+
   Future<void> pickFile() async {
     final picked = await FilePicker.platform.pickFiles(withData: true);
     if (picked == null) return;
@@ -181,6 +263,7 @@ class _AdminUserDocumentDetailsScreenState
                       const SnackBar(content: Text("Uploaded")),
                     );
 
+
                     // Refresh expiration only
                     final updated = docProvider.documents.firstWhere(
                           (d) => d["docType"] == widget.docType,
@@ -197,6 +280,12 @@ class _AdminUserDocumentDetailsScreenState
                 child: docProvider.loading
                     ? const CircularProgressIndicator()
                     : const Text("Upload"),
+              ),
+
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => _openStatusDialog(),
+                child: const Text("Change Status"),
               ),
             ],
           ),

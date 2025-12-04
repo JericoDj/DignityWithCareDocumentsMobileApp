@@ -1,6 +1,7 @@
 import 'package:dignitywithcare/providers/client_provider.dart';
 import 'package:dignitywithcare/providers/document_provider.dart';
 import 'package:dignitywithcare/providers/manage_user_provider.dart';
+import 'package:dignitywithcare/providers/notes_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DocumentProvider()),
         ChangeNotifierProvider(create: (_) => ManageUserProvider()),
         ChangeNotifierProvider(create: (_) => ClientProvider()),
+        ChangeNotifierProvider(create: (_) => NotesProvider()),
+
+
       ],
       child: const App(),
     ),

@@ -3,7 +3,8 @@ import 'package:dignitywithcare/router/startup_redirect.dart';
 import 'package:dignitywithcare/screens/admin/admin_screen.dart';
 import 'package:dignitywithcare/screens/admin/manage_business/manage_business.dart';
 import 'package:dignitywithcare/screens/admin/manage_clients/manage_clients.dart';
-import 'package:dignitywithcare/screens/admin/manage_reports/manage_reports.dart';
+import 'package:dignitywithcare/screens/admin/manage_notes/manage_notes.dart';
+
 import 'package:dignitywithcare/screens/admin/manage_users/admin_user_document_dashboard_screen.dart';
 import 'package:dignitywithcare/screens/admin/manage_users/admin_user_document_details_screen.dart';
 import 'package:dignitywithcare/screens/admin/manage_users/manage_users.dart';
@@ -153,13 +154,13 @@ GoRouter appRouter = GoRouter(
     ),
 
     GoRoute(
-      path: '/admin/reports',
+      path: '/admin/notes',
       builder: (_, __) {
         final role =
         (GetStorage().read("profile") as Map?)?["role"];
 
         if (role == "super_admin" || role == "admin") {
-          return const AdminReportsScreen();
+          return  MyNotesScreen(userId: GetStorage().read("uid"),);
         }
 
         return const DashboardScreen();

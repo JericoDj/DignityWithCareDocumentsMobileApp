@@ -23,6 +23,39 @@ class DocumentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<String?> updateDocumentStatus({
+    required String userId,
+    required String docType,
+    required String status,
+  }) async {
+    try {
+      final userDetails = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userId)
+          .get();
+
+      /// 1. Update Firestore status
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userId)
+          .collection("documents")
+          .doc(docType.toLowerCase().replaceAll(" ", "_"))
+          .update({"status": status});
+
+      print(userDetails.get("email"));
+      print(userDetails.get("name"));
+
+      /// 2. Reload documents
+      await adminLoadUserDocuments(email: userDetails.get("email"), fullName:userDetails.get("name") );
+
+
+      return null;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+
   Future<void> adminLoadUserDocuments({
     required String fullName,
     required String email,
