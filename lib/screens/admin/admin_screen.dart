@@ -91,13 +91,13 @@ class AdminDashboardScreen extends StatelessWidget {
                   const SizedBox(height: 12),
 
                   // 🟠 View Reports
-                  adminButton(
-                    label: "My Notes",
-                    color: Colors.orange,
-                    onTap: () {
-                      context.push("/admin/notes");
-                    },
-                  ),
+                  // adminButton(
+                  //   label: "My Notes",
+                  //   color: Colors.orange,
+                  //   onTap: () {
+                  //     context.push("/admin/notes");
+                  //   },
+                  // ),
 
                   const SizedBox(height: 20),
                   const Divider(height: 30),

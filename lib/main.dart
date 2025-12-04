@@ -29,7 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DocumentProvider()),
         ChangeNotifierProvider(create: (_) => ManageUserProvider()),
         ChangeNotifierProvider(create: (_) => ClientProvider()),
-        ChangeNotifierProvider(create: (_) => NotesProvider()),
+        // ChangeNotifierProvider(create: (_) => NotesProvider()),
 
 
       ],

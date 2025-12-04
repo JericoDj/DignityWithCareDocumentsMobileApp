@@ -39,15 +39,12 @@ class _DrawingScreenState extends State<DrawingScreen> {
     const size = Size(800, 800);
     final rect = Offset.zero & size;
 
-    // Transparent background
     canvas.drawRect(rect, Paint()..color = Colors.transparent);
 
-    // Draw background image if exists
     if (backgroundImage != null) {
       canvas.drawImage(backgroundImage!, Offset.zero, Paint());
     }
 
-    // Draw strokes
     for (var stroke in strokes) {
       final paint = Paint()
         ..color = stroke["color"]
@@ -93,7 +90,6 @@ class _DrawingScreenState extends State<DrawingScreen> {
       appBar: AppBar(
         title: const Text("Drawing Editor"),
         actions: [
-          // Black Pen Button
           IconButton(
             icon: Icon(Icons.brush,
                 color: selectedTool == "black" ? Colors.blue : Colors.black87),
@@ -101,15 +97,13 @@ class _DrawingScreenState extends State<DrawingScreen> {
             onPressed: () => setState(() => selectedTool = "black"),
           ),
 
-          // White Pen (eraser-like) Button
           IconButton(
             icon: Icon(Icons.cleaning_services,
                 color: selectedTool == "white" ? Colors.blue : Colors.black87),
-            tooltip: "White Pen (Eraser)",
+            tooltip: "White Pen / Eraser",
             onPressed: () => setState(() => selectedTool = "white"),
           ),
 
-          // Save Button
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () async {
@@ -145,15 +139,12 @@ class _DrawingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
 
-    // Transparent background
     canvas.drawRect(rect, Paint()..color = Colors.transparent);
 
-    // Draw background image
     if (bg != null) {
       canvas.drawImage(bg!, Offset.zero, Paint());
     }
 
-    // Draw strokes
     for (var stroke in strokes) {
       final paint = Paint()
         ..color = stroke["color"]

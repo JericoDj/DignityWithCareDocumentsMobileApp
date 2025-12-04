@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -18,13 +19,25 @@ class NotesProvider extends ChangeNotifier {
         .get();
 
     notes.clear();
-    notes.addAll(snap.docs.map((d) => {"id": d.id, ...d.data()}));
+
+    // Decode Base64 images
+    for (var doc in snap.docs) {
+      final data = doc.data();
+      final id = doc.id;
+
+      if (data["type"] == "drawing" && data["image"] is String) {
+        data["image"] = base64Decode(data["image"]);
+      }
+
+      notes.add({"id": id, ...data});
+    }
 
     loading = false;
     notifyListeners();
   }
 
-  Future<void> updateTextNote(String userId, String noteId, String newText) async {
+  Future<void> updateTextNote(
+      String userId, String noteId, String newText) async {
     try {
       await FirebaseFirestore.instance
           .collection("users")
@@ -33,38 +46,35 @@ class NotesProvider extends ChangeNotifier {
           .doc(noteId)
           .update({
         "text": newText,
-        "updatedAt": DateTime.now(),
+        "updatedAt": Timestamp.now(),
       });
 
-      // refresh notes
       await getNotes(userId);
-      notifyListeners();
-
     } catch (e) {
       print("Error updating text note: $e");
     }
   }
 
-  Future<void> updateDrawingNote(String userId, String noteId, Uint8List newImage) async {
+  Future<void> updateDrawingNote(
+      String userId, String noteId, Uint8List newImage) async {
     try {
+      final base64Image = base64Encode(newImage);
+
       await FirebaseFirestore.instance
           .collection("users")
           .doc(userId)
           .collection("notes")
           .doc(noteId)
           .update({
-        "image": newImage,
-        "updatedAt": DateTime.now(),
+        "image": base64Image,
+        "updatedAt": Timestamp.now(),
       });
 
       await getNotes(userId);
-      notifyListeners();
-
     } catch (e) {
       print("Error updating drawing note: $e");
     }
   }
-
 
   Future<void> addTextNote(String uid, String text) async {
     await FirebaseFirestore.instance
@@ -81,13 +91,15 @@ class NotesProvider extends ChangeNotifier {
   }
 
   Future<void> addDrawingNote(String uid, Uint8List bytes) async {
+    final base64Image = base64Encode(bytes);
+
     await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .collection("notes")
         .add({
       "type": "drawing",
-      "image": bytes,
+      "image": base64Image,
       "createdAt": Timestamp.now(),
     });
 
